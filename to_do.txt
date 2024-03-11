@@ -1,0 +1,51 @@
+1.  COMPLETED
+1:M NULLable relationship (Genres / Movies)
+- We are correct in our assumption that the NOT NULL constraint on 
+movies.genreID has to be removed.  Moreover, we need to ALTER TABLE 
+(which is a tricky process I'll share a link about later) so that 
+we have a ON DELETE SET NULL after the REFERENCES clause in the movies table
+
+2.   COMPLETED
+actors_movies primary key
+- We can completely remove the actorMovieID and simply replace it 
+with a composite key (actorID, movieID) which will be essentially 
+the same.  We'll have to update the ERD / schema.  Life is pain . 
+
+3. COMPLETED
+actors_movies delete functionality:
+- per the requirements page:
+
+    """
+    In a many-to-many relationship, to remove a relationship one 
+	would need to delete a row from a table. That would be the case 
+	with     bsg_people and bsg_certifications. One should be able to 
+	add and remove certifications for a person without deleting either
+	bsg_people rows or bsg_certification rows. If you implement DELETE functionality on at least (1) many-to-many relationship table,     such that the rows in the relevant entity tables are not impacted, that is sufficient.
+    """
+
+We have to be able to  delete from the actors_movies page without 
+deleting rows from either Actors or Movies.  That means we need to
+ remove the NOT NULL constraint on actorID and movieID (which will
+ together become a composite key (actorID , movieID) so we can 
+ remove entries from this bridge table without affecting the parent tables.
+
+4)  COMPLETED (added Rebecca Mornay as character Sara in Runaway Train)
+1:M movies - characters relationship.  The way we have it it is 
+actually 1: 1.  We need to add at least 1 more character to share
+ a movieID with another entry to make it a 1: M  (an easy fix)
+
+PS --------------------
+REGARDING alter table:
+we'll have to do this for the movies and actors table so we can 
+delete from movies_actors
+this is a tricky little bitch of a problem but I found out how to do it: 
+
+basically you have to use the command
+    SHOW CREATE TABLE [table name]
+to get the foreign key names for the table (which is the one that shows up in the dump, usually a huge string
+then add our foreign key and  ON DELETE SET NULL back at the same time ( after the REFERENCES clause)
+
+here is a link describing the exact procedure - it's not as bad as it sounds.
+https://5balloons.info/alter-table-to-remove-foreign-key-or-add-delete-cascade-mysql/
+
+I'm going to work on getting as much of this done as I can today. We should have a UNICORN meeting to confirm changes.
